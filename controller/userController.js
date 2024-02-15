@@ -252,6 +252,23 @@ module.exports.updateUser = async (req, res) => {
     }
 }
 
+module.exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await UserModel.find();
+        res.status(200).json({
+            responseCode: 200,
+            responseMessage: 'Users Retrieved Successfully',
+            users
+        });
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error
+        });
+    }
+}
+
 module.exports.createAccessory = async (req, res) => {
     try {
         const newAccessory = await AccessoryModel.create(req.body);

@@ -284,6 +284,8 @@ router.put('userUpdate/:userId', userController.updateUser);
 //   }
 // });
 
+router.get('/allUsers', userController.getAllUsers);
+
 
 router.post('/createAccessory', userController.createAccessory);
 // Create Accessory
