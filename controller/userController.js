@@ -1,10 +1,15 @@
 const UserModel = require('../models/userModel');
+const BlacklistedToken = require('../models/userTokenBlackList.js');
+
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.JWT_SECRET_KEY;
 
 
 module.exports.checkUsername = async (req, res) => {
-    const { username } = req.params;
-
     try {
+        const { username } = req.params;
+
         const existingUser = await UserModel.findOne({ userName: username });
         if (existingUser) {
             // User with the given username already exists
@@ -44,32 +49,42 @@ module.exports.signupUser = async (req, res) => {
         // }).send();
 
         console.log("Request Body:", req.body);
-        console.log("Uploaded File:", req.file);
 
-        const { userName, email, password, phone, dateOfBirth, address, role, isVerified } = req.body;
-
+        const { userName, email, password, phone, role } = req.body;
+        console.log("Password 1:", email);
         // Profile picture logic
-        let profilePic = '';
-        if (req.file) {
-            profilePic = req.file.path;
-            console.log("Profile Picture Path:", profilePic); // Log the profile picture path
+        // let profilePic = '';
+        // if (req.file) {
+        //     profilePic = req.file.path;
+        //     console.log("Profile Picture Path:", profilePic); // Log the profile picture path
+        // }
+        // Check if user already exists
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+            res.status(401).json({
+                responseCode: 401,
+                responseMessage: 'User already exists with this email',
+            }).send();
+            return;
         }
 
-        const newUser = await UserModel.create({
+        console.log("Password 2:", password);
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create new user
+        const newUser = new UserModel({
             userName,
             email,
-            password,
-            profilePic,
+            password: hashedPassword,
             phone,
-            dateOfBirth,
-            address,
-            role,
-            isVerified
+            role
         });
+        await newUser.save();
 
         res.status(201).json({
             responseCode: 201,
-            responseMessage: 'User Created Successfully',
+            responseMessage: 'User created successfully',
             user: newUser
         });
     } catch (error) {
@@ -103,37 +118,45 @@ module.exports.signupUser = async (req, res) => {
             }).send();
         }
     }
-
 }
+
 
 module.exports.loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        // // Check if user exists by email or username
+        // const user = await User.findOne({ $or: [{ email }, { username }] });
+        const { emailOrUsername, password } = req.body;
 
-        // Check if the user with the provided email exists
-        const user = await UserModel.findOne({ email });
+        // Check if user exists with email
+        let user = await UserModel.findOne({ email: emailOrUsername });
 
+        // If not found, check if user exists with username
+        if (!user) {
+            user = await UserModel.findOne({ userName: emailOrUsername });
+        }
         if (!user) {
             res.status(401).json({
                 responseCode: 401,
-                responseMessage: 'User not found with this email',
+                responseMessage: 'User not found with this email or username',
             }).send();
             return;
         }
 
-        // Check if the provided password matches the stored password
-        if (password === user.password) {
-            res.status(200).json({
-                responseCode: 200,
-                responseMessage: 'Login successful',
-                user
-            }).send();
-        } else {
-            res.status(401).json({
-                responseCode: 401,
-                responseMessage: 'Invalid Password!',
-            }).send();
+        // Validate password
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
+
+        // Generate JWT token
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
+        res.json({
+            responseCode: 200,
+            responseMessage: 'Login successful',
+            user,
+            token
+        })
+
     } catch (error) {
         res.status(500).json({
             responseCode: 500,
@@ -142,6 +165,7 @@ module.exports.loginUser = async (req, res) => {
         }).send();
     }
 }
+
 
 module.exports.forgotPassword = async (req, res) => {
     try {
@@ -233,6 +257,73 @@ module.exports.forgotPassword = async (req, res) => {
         });
     }
 }
+
+module.exports.getProfile = async (req, res) => {
+    try {
+        // Extract user ID from the authenticated request
+        const userId = req.user.userId;
+        console.log("GET PROFILE 1:", userId);
+
+        // Fetch user profile data from the database
+        const user = await UserModel.findById(userId);
+        console.log("GET PROFILE 1:", user);
+        if (!user) {
+            res.status(404).json({
+                responseCode: 404,
+                responseMessage: 'User not found',
+            }).send();
+            return;
+        }
+
+        const token = req.header('Authorization').replace('Bearer ', ''); // Extract token from request header
+        // Send the user profile data in the response
+        res.json({
+            responseCode: 200,
+            responseMessage: 'Profile data retrieved successfully',
+            user,
+            token
+        })
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message,
+        });
+    }
+};
+
+module.exports.userLogOut = async (req, res) => {
+    try {
+
+        // const token = req.header('Authorization').replace('Bearer ', '');
+        // // Check if token exists in blacklist
+        // const isBlacklisted = await BlacklistedToken.exists({ token });
+        // if (isBlacklisted) {
+        //     return res.status(401).json({ message: 'Token already blacklisted' });
+        // }
+
+        // // Add token to blacklist
+        // const blacklistedToken = new BlacklistedToken({ token });
+        // await blacklistedToken.save();
+
+        // res.json({
+        //     responseCode: 200,
+        //     responseMessage: 'Token blacklisted successfully',
+        // }).send();
+        res.json({
+            responseCode: 200,
+            responseMessage: 'Logout successfully',
+        }).send();
+
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message,
+        });
+    }
+};
+
 
 module.exports.updateUser = async (req, res) => {
     try {

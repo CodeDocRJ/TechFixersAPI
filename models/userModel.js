@@ -1,98 +1,101 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  userName: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowerCase: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  profilePic: {
-    type: String,
-    required: false,
-  },
-  phone: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: function(v) {
-        // Canadian phone number pattern: (###) ###-####
-        return /^\d{3}-\d{3}-\d{4}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid Canadian phone number!`
-    }
-  },
-  dateOfBirth: {
-    type: String,
-    required: false,
-    validate: {
-      validator: function(v) {
-        // Date of birth format: DD-MM-YYYY
-        return /^\d{2}-\d{2}-\d{4}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid date of birth! (DD-MM-YYYY)`
-    }
-  },
-  address: {
-    houseNumber: {
+const userSchema = new mongoose.Schema(
+  {
+    userName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowerCase: true,
+    },
+    password: {
       type: String,
       required: true,
     },
-    streetName: {
+    profilePic: {
       type: String,
-      required: true,
+      required: false,
     },
-    city: {
+    phone: {
       type: String,
       required: true,
+      // unique: true,
+      // validate: {
+      //   validator: function (v) {
+      //     // Canadian phone number pattern: ###-###-####
+      //     return /^\d{3}-\d{3}-\d{4}$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid Canadian phone number!`
+      // }
     },
-    postCode: {
+    dateOfBirth: {
       type: String,
-      required: true,
+      required: false,
       validate: {
-        validator: function(v) {
-          // Postal code pattern: A1A 1A1
-          return /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/.test(v);
+        validator: function (v) {
+          // Date of birth format: DD-MM-YYYY
+          return /^\d{2}-\d{2}-\d{4}$/.test(v);
         },
-        message: props => `${props.value} is not a valid postal code!`
+        message: props => `${props.value} is not a valid date of birth! (DD-MM-YYYY)`
       }
     },
+    address: {
+      houseNumber: {
+        type: String,
+        required: false,
+      },
+      streetName: {
+        type: String,
+        required: false,
+      },
+      city: {
+        type: String,
+        required: false,
+      },
+      postCode: {
+        type: String,
+        required: false,
+        // validate: {
+        //   validator: function (v) {
+        //     // Postal code pattern: A1A 1A1
+        //     return /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/.test(v);
+        //   },
+        //   message: props => `${props.value} is not a valid postal code!`
+        // }
+      },
+    },
+    // isAdmin: {
+    //   required: true,
+    //   type: Boolean,
+    //   default: false, // Default value is false, all the normal signups will NOT BE AN ADMIN
+    // },
+    role: {
+      type: String,
+      enum: ['Admin', 'User', 'Tech'],
+      required: true,
+    },
+    isVerified: {
+      required: true,
+      type: Boolean,
+      default: false, // Default value is false, all the normal signup
+    },
+    // resetToken: {
+    //   type: String,
+    // },
+    // resetTokenExpiration: {
+    //   type: Date,
+    // },
+    token: String,
   },
-  // isAdmin: {
-  //   required: true,
-  //   type: Boolean,
-  //   default: false, // Default value is false, all the normal signups will NOT BE AN ADMIN
-  // },
-  role: {
-    type: String,
-    enum: ['Admin', 'User', 'Tech'],
-    required: true,
-  },
-  isVerified: {
-    required: true,
-    type: Boolean,
-    default: false, // Default value is false, all the normal signup
-  },
-  resetToken: {
-    type: String,
-  },
-  resetTokenExpiration: {
-    type: Date,
-  },
-},
-{
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 //this is creation of the collection/model
 const UserModel = mongoose.model('User', userSchema);
