@@ -70,7 +70,9 @@ module.exports.signupUser = async (req, res) => {
 
         console.log("Password 2:", password);
         // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create new user
         const newUser = new UserModel({
@@ -262,11 +264,9 @@ module.exports.getProfile = async (req, res) => {
     try {
         // Extract user ID from the authenticated request
         const userId = req.user.userId;
-        console.log("GET PROFILE 1:", userId);
 
         // Fetch user profile data from the database
         const user = await UserModel.findById(userId);
-        console.log("GET PROFILE 1:", user);
         if (!user) {
             res.status(404).json({
                 responseCode: 404,
@@ -291,6 +291,59 @@ module.exports.getProfile = async (req, res) => {
         });
     }
 };
+
+module.exports.updateProfile = async (req, res) => {
+    try {
+        const { userName, email, password, phone, dateOfBirth, address, role, isVerified, token } = req.body;
+        const { userId } = req.params; // Extract userId from request parameters
+        const profileImage = req.file ? req.file.path : null;
+
+        // Check if the user is authorized to perform this action
+        // if (!verifyToken(userId, token)) { // Implement your token verification logic
+        //     return res.status(401).json({
+        //         responseCode: 401,
+        //         responseMessage: 'Unauthorized Access!'
+        //     }).send();
+        // }
+
+        // Find the user by userId
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                responseCode: 404,
+                responseMessage: 'User not found',
+            }).send();
+        }
+
+        // Update user data
+        // user.userName = userName;
+        // user.email = email;
+        // user.password = password;
+        // user.phone = phone;
+        user.dateOfBirth = dateOfBirth;
+        user.address = address;
+        user.role = role;
+        user.isVerified = isVerified;
+        user.profileImage = profileImage || user.profileImage;
+        console.log("GET PROFILE 1:", user.profileImage);
+
+        await user.save();
+        res.status(200).json({
+            responseCode: 200,
+            responseMessage: 'Profile updated successfully',
+            user,
+            token: token
+        }).send();
+
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message,
+        });
+    }
+}
+
 
 module.exports.userLogOut = async (req, res) => {
     try {

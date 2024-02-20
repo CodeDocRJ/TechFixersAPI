@@ -17,21 +17,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePic: {
+    profileImage: {
       type: String,
       required: false,
     },
     phone: {
       type: String,
       required: true,
-      // unique: true,
-      // validate: {
-      //   validator: function (v) {
-      //     // Canadian phone number pattern: ###-###-####
-      //     return /^\d{3}-\d{3}-\d{4}$/.test(v);
-      //   },
-      //   message: props => `${props.value} is not a valid Canadian phone number!`
-      // }
     },
     dateOfBirth: {
       type: String,
@@ -69,27 +61,17 @@ const userSchema = new mongoose.Schema(
         // }
       },
     },
-    // isAdmin: {
-    //   required: true,
-    //   type: Boolean,
-    //   default: false, // Default value is false, all the normal signups will NOT BE AN ADMIN
-    // },
     role: {
       type: String,
       enum: ['Admin', 'User', 'Tech'],
       required: true,
+      default: 'User',
     },
     isVerified: {
       required: true,
       type: Boolean,
       default: false, // Default value is false, all the normal signup
     },
-    // resetToken: {
-    //   type: String,
-    // },
-    // resetTokenExpiration: {
-    //   type: Date,
-    // },
     token: String,
   },
   {

@@ -1,6 +1,6 @@
 const mongoose = require('../dbs/conn');
 
-const repairSchema = new mongoose.Schema({
+const repairRequestSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -28,6 +28,6 @@ const repairSchema = new mongoose.Schema({
   timeStamp: { type: Date, default: Date.now },
 });
 
-const RepairModel = mongoose.model('Repair', repairSchema);
+const RepairModel = mongoose.model('RepairRequest', repairRequestSchema);
 
 module.exports = RepairModel;
