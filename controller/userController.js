@@ -87,7 +87,7 @@ module.exports.signupUser = async (req, res) => {
         res.status(201).json({
             responseCode: 201,
             responseMessage: 'User created successfully',
-            user: newUser
+            UserData: newUser
         });
     } catch (error) {
         if (error.code === 11000 && error.keyPattern.userName) {
