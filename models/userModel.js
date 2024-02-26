@@ -51,14 +51,7 @@ const userSchema = new mongoose.Schema(
       },
       postCode: {
         type: String,
-        required: false,
-        // validate: {
-        //   validator: function (v) {
-        //     // Postal code pattern: A1A 1A1
-        //     return /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/.test(v);
-        //   },
-        //   message: props => `${props.value} is not a valid postal code!`
-        // }
+        required: false
       },
     },
     role: {
