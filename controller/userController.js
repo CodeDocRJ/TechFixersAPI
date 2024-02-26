@@ -1,6 +1,8 @@
 const UserModel = require('../models/userModel');
 const BlacklistedToken = require('../models/userTokenBlackList.js');
 
+require("dotenv").config();
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET_KEY;

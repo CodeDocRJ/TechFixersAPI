@@ -3,7 +3,6 @@ require('./dbs/conn');
 const bodyParser = require('body-parser');
 
 const app = express();
-// require("dotenv").config();
 const port = process.env.PORT || 3000;
 
 const userRoutes = require('./routes/userRoutes');
