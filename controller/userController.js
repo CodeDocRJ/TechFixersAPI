@@ -155,7 +155,7 @@ module.exports.loginUser = async (req, res) => {
         res.json({
             responseCode: 200,
             responseMessage: 'Login successful',
-            user,
+            UserData: user,
             token
         })
 
