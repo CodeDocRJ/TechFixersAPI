@@ -1,11 +1,12 @@
 const UserModel = require('../models/userModel');
-const BlacklistedToken = require('../models/userTokenBlackList.js');
+const ProductCategory = require('../models/productCategoryModel');
+const Product = require('../models/productModel');
+const Order = require('../models/orderModel');
 
 require("dotenv").config();
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = process.env.JWT_SECRET_KEY;
 
 
 module.exports.checkUsername = async (req, res) => {
@@ -159,7 +160,7 @@ module.exports.loginUser = async (req, res) => {
             responseMessage: 'Login successful',
             UserData: user,
             token
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -349,22 +350,6 @@ module.exports.updateProfile = async (req, res) => {
 
 module.exports.userLogOut = async (req, res) => {
     try {
-
-        // const token = req.header('Authorization').replace('Bearer ', '');
-        // // Check if token exists in blacklist
-        // const isBlacklisted = await BlacklistedToken.exists({ token });
-        // if (isBlacklisted) {
-        //     return res.status(401).json({ message: 'Token already blacklisted' });
-        // }
-
-        // // Add token to blacklist
-        // const blacklistedToken = new BlacklistedToken({ token });
-        // await blacklistedToken.save();
-
-        // res.json({
-        //     responseCode: 200,
-        //     responseMessage: 'Token blacklisted successfully',
-        // }).send();
         res.json({
             responseCode: 200,
             responseMessage: 'Logout successfully',
@@ -398,146 +383,98 @@ module.exports.updateUser = async (req, res) => {
     }
 }
 
-module.exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await UserModel.find();
-        res.status(200).json({
-            responseCode: 200,
-            responseMessage: 'Users Retrieved Successfully',
-            users
-        });
-    } catch (error) {
-        res.status(500).json({
-            responseCode: 500,
-            responseMessage: 'Internal Server Error',
-            error
-        });
-    }
-}
 
-module.exports.createAccessory = async (req, res) => {
+module.exports.getProductCategory = async (req, res) => {
     try {
-        const newAccessory = await AccessoryModel.create(req.body);
-        res.status(201).json({
-            responseCode: 201,
-            responseMessage: 'Accessory created successfully',
-            newAccessory
-        });
-    } catch (error) {
-        res.status(500).json({
-            responseCode: 500,
-            responseMessage: 'Internal Server Error',
-            error
-        });
-    }
-    try {
-        const { userId, accessoryName, description } = req.body;
-
-        // Check if the user exists
-        const user = await UserModel.findById(userId);
-        if (!user) {
-            res.status(400).json({
-                responseCode: 400,
-                responseMessage: 'User not found',
-                error: null
+        try {
+            const categories = await ProductCategory.find({}, '_id catName catType');
+            res.status(200).json({
+                responseCode: 200,
+                responseMessage: 'Categories Retrieved Successfully',
+                Categories: categories
             });
-            return;
+        } catch (error) {
+            res.status(500).json({
+                responseCode: 500,
+                responseMessage: 'Internal Server Error',
+                error: error.message
+            });
         }
-
-        // Create the accessory linked to the user
-        const newAccessory = await AccessoryModel.create({ userId, accessoryName, description });
-        res.status(201).json({
-            responseCode: 201, responseMessage: 'Accessory created successfully',
-            data: newAccessory
-        });
     } catch (error) {
 
-        res.status(500).json({
-            responseCode: 500,
-            responseMessage: 'Internal Server Error',
-            error
-        });
     }
 }
 
-module.exports.deleteAccessory = async (req, res) => {
+module.exports.getProductList = async (req, res) => {
     try {
-        const { userId, accessoryId } = req.params;
-
-        // Check if the user exists
-        const user = await UserModel.findById(userId);
-        if (!user) {
+        const categoryId = req.params.categoryId;
+        const category = await ProductCategory.findById(categoryId);
+        if (!category) {
             return res.status(404).json({
                 responseCode: 404,
-                responseMessage: 'User not found'
-            });
+                responseMessage: 'Category not found',
+            }).send();
         }
-
-        // Check if the accessory exists
-        const accessory = await AccessoryModel.findById(accessoryId);
-        if (!accessory) {
-            return res.status(404).json({
-                responseCode: 404,
-                responseMessage: 'Accessory not found'
-            });
-        }
-
-        // Check if the accessory belongs to the user
-        if (accessory.userId !== userId) {
-            return res.status(403).json({
-                responseCode: 403,
-                responseMessage: 'Forbidden: Accessory does not belong to the user'
-            });
-        }
-
-        // Delete the accessory
-        await AccessoryModel.findByIdAndDelete(accessoryId);
-
-        // Provide success response with user details
+        const products = await Product.find({ categoryId }, '-categoryId').lean();
         res.status(200).json({
             responseCode: 200,
-            responseMessage: 'Accessory deleted successfully',
-            user: {
-                userId: user._id,
-                userName: user.userName,
-                email: user.email,
-                // Add other user details as needed
-            },
-            deletedAccessory: {
-                accessoryId: accessory._id,
-                accessoryName: accessory.accessoryName,
-                // Add other accessory details as needed
-            },
+            responseMessage: 'Products Retrieved Successfully',
+            products
         });
+
     } catch (error) {
         res.status(500).json({
             responseCode: 500,
             responseMessage: 'Internal Server Error',
-            error
+            error: error.message
         });
     }
 }
 
-module.exports.userSellingHistory = async (req, res) => {
+//submit order according to product class with the user details
+module.exports.submitOrder = async (req, res) => {
     try {
-        const userId = req.params.userId;
-        const user = await UserModel.findById(userId);
-
-        if (!user) {
-            res.status(404).json({
-                responseCode: 404,
-                responseMessage: 'User not found'
-            });
-            return;
-        }
-
-        // Assuming userSellingHistory is an array field in the user model
-        const sellingHistory = user.userSellingHistory || [];
-
+        // const { userId, productId, quantity } = req.body;
+        // const user = await UserModel.findById(userId);
+        // if (!user) {
+        //     return res.status(404).json({
+        //         responseCode: 404,
+        //         responseMessage: 'User not found',
+        //     }).send();
+        // }
+        // const product = await Product.findById(productId);
+        // if (!product) {
+        //     return res.status(404).json({
+        //         responseCode: 404,
+        //         responseMessage: 'Product not found',
+        //     }).send();
+        // }
+        // const order = new Order({
+        //     userId,
+        //     productId,
+        //     quantity
+        // });
+        // await order.save();
+        // res.status(200).json({
+        //     responseCode: 200,
+        //     responseMessage: 'Order Submitted Successfully',
+        //     order
+        // });
+        const { userId, firstName, lastName, productId, quantity, address, orderPlaceDateTime } = req.body;
+        const newOrder = new Order({
+            userId,
+            firstName,
+            lastName,
+            productId,
+            quantity,
+            address,
+            orderPlaceDateTime
+        });
+        await newOrder.save();
         res.status(200).json({
             responseCode: 200,
-            responseMessage: 'User Selling History retrieved successfully',
-            data: sellingHistory
+            responseMessage: 'Order Submitted Successfully',
+            order: newOrder
         });
     } catch (error) {
         res.status(500).json({

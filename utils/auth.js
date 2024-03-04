@@ -52,3 +52,14 @@ module.exports = async (req, res, next) => {
         });
     }
 };
+
+
+module.exports.requireAdmin = (req, res, next) => {
+    if (req.user && req.user.role === 'Admin') {
+        next(); // Continue to the next middleware
+    }  else {
+        return res.status(403).json({
+            message: 'Access denied. Only admins are allowed to access this resource.'
+        });
+    }
+};

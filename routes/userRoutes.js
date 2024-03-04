@@ -87,16 +87,14 @@ router.get('/logOut/', authMiddleware, userController.userLogOut);
 // User Update
 router.put('userUpdate/:userId', userController.updateUser);
 
-router.get('/allUsers', userController.getAllUsers);
+// get product categories
+router.get('/getProductCategory', userController.getProductCategory);
 
-// Create Accessory
-router.post('/createAccessory', userController.createAccessory);
+// Get Product list by categoryid
+router.get('/getProductList/:categoryId', userController.getProductList);
 
-// Delete Accessory
-router.delete('deleteAccessory/:id', userController.deleteAccessory);
-
-// User Selling History
-router.get('/userSellingHistory/:userId', userController.userSellingHistory);
+// place an order for product
+router.post('/submitOrder', userController.submitOrder);
 
 
 module.exports = router;
