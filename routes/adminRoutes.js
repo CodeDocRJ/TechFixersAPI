@@ -8,7 +8,7 @@ const { requireAdmin } = require('../utils/auth.js');
 router.post('/signup', adminController.signupAdmin);
 
 // Admin Login
-router.post('/login', requireAdmin, adminController.loginAdmin);
+router.post('/login', adminController.loginAdmin);
 
 // Fetch All Users
 router.get('/fetchAllUsers', requireAdmin, adminController.fetchAllUsers);

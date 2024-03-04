@@ -44,13 +44,6 @@ module.exports.checkUsername = async (req, res) => {
 
 module.exports.signupUser = async (req, res) => {
     try {
-        // const newUser = await UserModel.create(req.body);
-        // res.status(201).json({ 
-        //   responseCode: 201, 
-        //   responseMessage: 'User Created Successfully', 
-        //   user: newUser 
-        // }).send();
-
         console.log("Request Body:", req.body);
 
         const { userName, email, password, phone, role } = req.body;
