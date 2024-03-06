@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const BlacklistedToken = require('../models/userTokenBlackList.js');
 
-module.exports = async (req, res, next) => {
+module.exports.tokenAuth = async (req, res, next) => {
 
     try {
         // const token = req.header('Authorization');

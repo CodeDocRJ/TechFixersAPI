@@ -1,7 +1,7 @@
 const AdminModel = require('../models/adminModel');
 const UserModel = require('../models/userModel');
 const RepairModel = require('../models/repairModel');
-const AccessoryModel = require('../models/accessoryModel');
+const OrderModel = require('../models/orderModel');
 
 require("dotenv").config();
 
@@ -18,7 +18,7 @@ module.exports.signupAdmin = async (req, res) => {
         const existingUser = await AdminModel.findOne({ email });
 
         console.log("Request Body 111:", req.body);
-        
+
         if (existingUser) {
             res.status(401).json({
                 responseCode: 401,
@@ -137,3 +137,88 @@ module.exports.fetchAllUsers = async (req, res) => {
         }).send();
     }
 }
+
+exports.createProductCategory = async (req, res) => {
+    try {
+        const { catName, catType } = req.body;
+        const newCategory = new ProductCategory({
+            catName,
+            catType
+        });
+        await newCategory.save();
+        // res.status(201).json(newCategory);
+        res.status(200).json({
+            responseCode: 200,
+            responseMessage: 'Category saved successfully',
+            Category: newCategory
+        });
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message
+        });
+    }
+};
+
+exports.uploadProduct = async (req, res) => {
+    try {
+        // const { categoryId, name, type, brand, model, price, description, imageUrl, rating } = req.body;
+        // const newProduct = new Product({
+        //     categoryId,
+        //     name,
+        //     type,
+        //     brand,
+        //     model,
+        //     price,
+        //     description,
+        //     imageUrl,
+        //     rating
+        // });
+        const { categoryId, name, type, brand, model, price, description, rating } = req.body;
+        const imageUrl = req.file.path; // Cloudinary automatically uploads the file and returns its URL
+        const newProduct = new Product({
+            categoryId,
+            name,
+            type,
+            brand,
+            model,
+            price,
+            description,
+            imageUrl,
+            rating
+        });
+        await newProduct.save();
+        // res.status(201).json(newProduct);
+        res.status(200).json({
+            responseCode: 200,
+            responseMessage: 'Product uploaded successfully',
+            Product: newProduct
+        });
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message
+        });
+    }
+};
+
+exports.getOrderList = async (req, res) => {
+    try {
+        const orders = await OrderModel.find();
+        // res.json(orders);
+        res.status(200).json({
+            responseCode: 200,
+            responseMessage: 'Order List Retrieved successfully',
+            OrderList: orders
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            responseCode: 500,
+            responseMessage: 'Internal Server Error',
+            error: error.message
+        });
+    }
+};

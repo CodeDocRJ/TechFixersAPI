@@ -294,14 +294,6 @@ module.exports.updateProfile = async (req, res) => {
         const { userId } = req.params; // Extract userId from request parameters
         const profileImage = req.file ? req.file.path : null;
 
-        // Check if the user is authorized to perform this action
-        // if (!verifyToken(userId, token)) { // Implement your token verification logic
-        //     return res.status(401).json({
-        //         responseCode: 401,
-        //         responseMessage: 'Unauthorized Access!'
-        //     }).send();
-        // }
-
         // Find the user by userId
         const user = await UserModel.findById(userId);
         if (!user) {
@@ -310,12 +302,7 @@ module.exports.updateProfile = async (req, res) => {
                 responseMessage: 'User not found',
             }).send();
         }
-
-        // Update user data
-        // user.userName = userName;
-        // user.email = email;
-        // user.password = password;
-        // user.phone = phone;
+        
         user.dateOfBirth = dateOfBirth;
         user.address = address;
         user.role = role;
