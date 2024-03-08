@@ -2,11 +2,15 @@ const AdminModel = require('../models/adminModel');
 const UserModel = require('../models/userModel');
 const RepairModel = require('../models/repairModel');
 const OrderModel = require('../models/orderModel');
+const ProductCategoryModel = require('../models/productCategoryModel');
+const ProductModel = require('../models/productModel'); 
 
 require("dotenv").config();
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+const cloudinary = require('cloudinary').v2;
 
 
 module.exports.signupAdmin = async (req, res) => {
@@ -72,7 +76,6 @@ module.exports.signupAdmin = async (req, res) => {
 module.exports.loginAdmin = async (req, res) => {
     try {
         const { emailOrUsername, password } = req.body;
-        console.log("Request Body 333:", req.body);
 
         // Check if user exists with email
         let admin = await AdminModel.findOne({ email: emailOrUsername });
@@ -145,12 +148,29 @@ module.exports.fetchAllUsers = async (req, res) => {
 module.exports.createProductCategory = async (req, res) => {
     try {
         const { catName, catType } = req.body;
-        const newCategory = new ProductCategory({
+
+        // Check if category name already exists
+        const existingCategory = await ProductCategoryModel.findOne({ catName });
+        if (existingCategory) {
+            return res.status(400).json({
+                responseCode: 400,
+                responseMessage: 'Category already exists'
+            });
+        }
+
+        // Upload image to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, { folder: 'Appliances' });
+
+        // Create new category object
+        const newCategory = new ProductCategoryModel({
             catName,
-            catType
+            catType,
+            categoryImage: result.secure_url // Save Cloudinary image URL
         });
+
         await newCategory.save();
-        // res.status(201).json(newCategory);
+
+        // Send response
         res.status(200).json({
             responseCode: 200,
             responseMessage: 'Category saved successfully',
@@ -167,21 +187,12 @@ module.exports.createProductCategory = async (req, res) => {
 
 module.exports.uploadProduct = async (req, res) => {
     try {
-        // const { categoryId, name, type, brand, model, price, description, imageUrl, rating } = req.body;
-        // const newProduct = new Product({
-        //     categoryId,
-        //     name,
-        //     type,
-        //     brand,
-        //     model,
-        //     price,
-        //     description,
-        //     imageUrl,
-        //     rating
-        // });
         const { categoryId, name, type, brand, model, price, description, rating } = req.body;
-        const imageUrl = req.file.path; // Cloudinary automatically uploads the file and returns its URL
-        const newProduct = new Product({
+
+        // Upload image to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, { folder: 'Products' });
+
+        const newProduct = new ProductModel({
             categoryId,
             name,
             type,
@@ -189,7 +200,7 @@ module.exports.uploadProduct = async (req, res) => {
             model,
             price,
             description,
-            imageUrl,
+            productImage: result.secure_url, // Save Cloudinary image URL
             rating
         });
         await newProduct.save();

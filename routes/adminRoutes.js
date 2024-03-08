@@ -16,17 +16,48 @@ cloudinary.config({
 });
 
 // Configure multer storage for Cloudinary
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'CatrgoriesFolder', // Optional - folder name in Cloudinary
-        format: async (req, file) => 'jpg', // Optional - file format
-        public_id: (req, file) => 'sample-image' // Optional - set your own public ID
-    }
-});
+// const storage = new CloudinaryStorage({
+//     cloudinary: cloudinary,
+//     params: {
+//         folder: 'CatrgoriesFolder', // Optional - folder name in Cloudinary
+//         format: async (req, file) => 'jpg', // Optional - file format
+//         public_id: (req, file) => 'sample-image' // Optional - set your own public ID
+//     }
+// });
 
-// Initialize multer instance with Cloudinary storage
-const upload = multer({ storage: storage });
+// // Initialize multer instance with Cloudinary storage
+// const upload = multer({ storage: storage });
+
+// Multer Configuration for file uploads
+const storage = multer.diskStorage({});
+
+const uploadcategoryImage = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB file size limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PNG and JPEG images are allowed'));
+        }
+    }
+}).single('categoryImage');
+
+const uploadproductImage = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB file size limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PNG and JPEG images are allowed'));
+        }
+    }
+}).single('productImage');
 
 //Admin Signup
 router.post('/signup', adminController.signupAdmin);
@@ -38,10 +69,10 @@ router.post('/login', adminController.loginAdmin);
 router.get('/fetchAllUsers', authMiddleware.requireAdmin, adminController.fetchAllUsers);
 
 //create product category
-router.post('/createProductCategory', adminController.createProductCategory);
+router.post('/createProductCategory', authMiddleware.requireAdmin, uploadcategoryImage, adminController.createProductCategory);
 
 //upload product
-router.post('/uploadProduct', upload.single('image'), adminController.uploadProduct);
+router.post('/uploadProduct', authMiddleware.requireAdmin, uploadproductImage, adminController.uploadProduct);
 
 //get order list placed by users
 router.get('/getOrderList', adminController.getOrderList);

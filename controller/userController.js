@@ -367,7 +367,7 @@ module.exports.updateUser = async (req, res) => {
 module.exports.getProductCategory = async (req, res) => {
     try {
         try {
-            const categories = await ProductCategory.find({}, '_id catName catType');
+            const categories = await ProductCategory.find({}, '_id catName catType categoryImage');
             res.status(200).json({
                 responseCode: 200,
                 responseMessage: 'Categories Retrieved Successfully',
@@ -398,7 +398,8 @@ module.exports.getProductList = async (req, res) => {
         const products = await Product.find({ categoryId }, '-categoryId').lean();
         res.status(200).json({
             responseCode: 200,
-            responseMessage: 'Products Retrieved Successfully',
+            responseMessage: 'Product List Retrieved Successfully',
+            ProductCount: products.length,
             products
         });
 
