@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const adminController = require("../controller/adminController.js");
-const { requireAdmin } = require('../utils/auth.js');
+const authMiddleware = require('../utils/auth.js');
+
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 // Configure Cloudinary
 cloudinary.config({
@@ -31,7 +35,7 @@ router.post('/signup', adminController.signupAdmin);
 router.post('/login', adminController.loginAdmin);
 
 // Fetch All Users
-router.get('/fetchAllUsers', requireAdmin, adminController.fetchAllUsers);
+router.get('/fetchAllUsers', authMiddleware.requireAdmin, adminController.fetchAllUsers);
 
 //create product category
 router.post('/createProductCategory', adminController.createProductCategory);

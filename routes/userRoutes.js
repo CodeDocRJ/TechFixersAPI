@@ -104,13 +104,13 @@ router.post('/login', upload.none(), userController.loginUser);
 router.post('forgotPassword', userController.forgotPassword);
 
 // User Profile
-router.get('/getProfile/:userId', authMiddleware, userController.getProfile);
+router.get('/getProfile/:userId', authMiddleware.tokenAuth, userController.getProfile);
 
 // User Update Profile
 router.post('/updateProfile/:userId', extractUserId, upload.single('profileImage'), authMiddleware.tokenAuth, userController.updateProfile);
 
 // User Logout
-router.get('/logOut/', authMiddleware, userController.userLogOut);
+router.get('/logOut/', authMiddleware.tokenAuth, userController.userLogOut);
 
 // User Update
 router.put('userUpdate/:userId', userController.updateUser);

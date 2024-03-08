@@ -72,34 +72,37 @@ module.exports.signupAdmin = async (req, res) => {
 module.exports.loginAdmin = async (req, res) => {
     try {
         const { emailOrUsername, password } = req.body;
+        console.log("Request Body 333:", req.body);
 
         // Check if user exists with email
-        let user = await AdminModel.findOne({ email: emailOrUsername });
+        let admin = await AdminModel.findOne({ email: emailOrUsername });
 
         // If not found, check if user exists with username
-        if (!user) {
-            user = await AdminModel.findOne({ userName: emailOrUsername });
+        if (!admin) {
+            admin = await AdminModel.findOne({ userName: emailOrUsername });
         }
-        if (!user) {
+        if (!admin) {
             res.status(401).json({
                 responseCode: 401,
-                responseMessage: 'Admin not found with this email or username',
+                responseMessage: 'Admin not found with this email or username'
             }).send();
             return;
         }
 
         // Validate password
-        const validPassword = await bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(password, admin.password);
         if (!validPassword) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ 
+                message: 'Invalid credentials' 
+            });
         }
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
+        const token = jwt.sign({ userId: admin._id }, process.env.JWT_SECRET_KEY);
         res.json({
             responseCode: 200,
             responseMessage: 'Login successful as an Admin',
-            AdminData: user,
+            AdminData: admin,
             token
         });
 
@@ -120,6 +123,7 @@ module.exports.fetchAllUsers = async (req, res) => {
             res.status(200).json({
                 responseCode: 200,
                 responseMessage: 'Users retrieved successfully',
+                UserCount: allUsers.length,
                 Users: allUsers,
             });
         } else {
@@ -138,7 +142,7 @@ module.exports.fetchAllUsers = async (req, res) => {
     }
 }
 
-exports.createProductCategory = async (req, res) => {
+module.exports.createProductCategory = async (req, res) => {
     try {
         const { catName, catType } = req.body;
         const newCategory = new ProductCategory({
@@ -161,7 +165,7 @@ exports.createProductCategory = async (req, res) => {
     }
 };
 
-exports.uploadProduct = async (req, res) => {
+module.exports.uploadProduct = async (req, res) => {
     try {
         // const { categoryId, name, type, brand, model, price, description, imageUrl, rating } = req.body;
         // const newProduct = new Product({
@@ -204,7 +208,7 @@ exports.uploadProduct = async (req, res) => {
     }
 };
 
-exports.getOrderList = async (req, res) => {
+module.exports.getOrderList = async (req, res) => {
     try {
         const orders = await OrderModel.find();
         // res.json(orders);

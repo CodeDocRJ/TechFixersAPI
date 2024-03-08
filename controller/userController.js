@@ -271,7 +271,7 @@ module.exports.getProfile = async (req, res) => {
             return;
         }
 
-        const token = req.header('Authorization').replace('Bearer ', ''); // Extract token from request header
+        const token = await req.header('Authorization').replace('Bearer ', ''); // Extract token from request header
         // Send the user profile data in the response
         res.json({
             responseCode: 200,
@@ -286,7 +286,7 @@ module.exports.getProfile = async (req, res) => {
             error: error.message,
         });
     }
-};
+}
 
 module.exports.updateProfile = async (req, res) => {
     try {

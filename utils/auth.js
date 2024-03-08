@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const BlacklistedToken = require('../models/userTokenBlackList.js');
+const AdminModel = require('../models/adminModel.js');
 
 module.exports.tokenAuth = async (req, res, next) => {
 
@@ -54,12 +55,27 @@ module.exports.tokenAuth = async (req, res, next) => {
 };
 
 
-module.exports.requireAdmin = (req, res, next) => {
-    if (req.user && req.user.role === 'Admin') {
-        next(); // Continue to the next middleware
-    }  else {
-        return res.status(403).json({
-            message: 'Access denied. Only admins are allowed to access this resource.'
+module.exports.requireAdmin = async (req, res, next) => {
+    const adminId = req.query.adminId;
+    console.log('requireAdmin adminId is ' + adminId);
+
+    try {
+        const user = await AdminModel.findById(adminId);
+
+        console.log('requireAdmin user is ' + user);
+
+        if (user && user.role === 'Admin') {
+            req.user = user; // Set the user object in the request for future use
+            next(); // Continue to the next middleware
+        } else {
+            return res.status(403).json({
+                message: 'Access denied. Only admins are allowed to access this resource.'
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal Server Error',
+            error: error.message
         });
     }
 };
