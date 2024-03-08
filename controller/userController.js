@@ -371,7 +371,7 @@ module.exports.getProductCategory = async (req, res) => {
             res.status(200).json({
                 responseCode: 200,
                 responseMessage: 'Categories Retrieved Successfully',
-                Categories: categories
+                ProductCategories: categories
             });
         } catch (error) {
             res.status(500).json({
@@ -400,7 +400,7 @@ module.exports.getProductList = async (req, res) => {
             responseCode: 200,
             responseMessage: 'Product List Retrieved Successfully',
             ProductCount: products.length,
-            products
+            Products : products
         });
 
     } catch (error) {
