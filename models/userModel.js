@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0.00, // Default value is false, all the normal signup
     },
-    logngitude: {
+    longitude: {
       required: false,
       type: Number,
       default: 0.00, // Default value is false, all the normal signup
