@@ -12,4 +12,9 @@ module.exports = {
     secret_key: process.env.JWT_SECRET_KEY
   },
 
+  nodemailer: {
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASS
+  }
+
 };

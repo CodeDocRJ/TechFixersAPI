@@ -11,7 +11,7 @@ module.exports.addRepairCategory = async ( req, res ) =>
     {
         const { applianceName, approxPrice } = req.body;
 
-        const isRepaircategory = await RepairCategoryModel.find( { applianceName: applianceName } );
+        const isRepaircategory = await RepairCategoryModel.findOne( { applianceName: applianceName } );
 
         if ( isRepaircategory )
         {
@@ -39,7 +39,12 @@ module.exports.getRepairCategoryList = async ( req, res ) =>
     {
         const repairCategories = await RepairCategoryModel.find().lean();
 
-        return getResult( res, HttpStatusCode.Ok, repairCategories ? repairCategories : [], ADMIN.repair_category.list );
+        if ( repairCategories.length === 0 )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, repairCategories, ADMIN.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair category list : ", error );
@@ -55,12 +60,12 @@ module.exports.getRepairCategory = async ( req, res ) =>
 
         const repairCategory = await RepairCategoryModel.findById( repairCategoryId );
 
-        // if ( !repairCategory )
-        // {
-        //     return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
-        // }
+        if ( !repairCategory )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
+        }
 
-        return getResult( res, HttpStatusCode.Ok, repairCategory ? repairCategory : [], ADMIN.repair_category.get );
+        return getResult( res, HttpStatusCode.Ok, repairCategory, ADMIN.repair_category.get );
     } catch ( error )
     {
         console.error( "Error in get repair category : ", error );

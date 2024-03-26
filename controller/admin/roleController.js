@@ -7,8 +7,9 @@ module.exports.changeRole = async ( req, res ) =>
 {
     try
     {
-        const { id } = req.params.id;
+        const { id } = req.params;
         const { role } = req.body;
+
         const user = await UserModel.findOne( { _id: id } );
 
         if ( !user )
@@ -18,6 +19,10 @@ module.exports.changeRole = async ( req, res ) =>
 
         user.role = role;
 
+        if ( role === "Admin" )
+        {
+            return getErrorResult( res, HttpStatusCode.BadRequest, "Not changed for Admin role" );
+        }
         await user.save();
 
         return getResult( res, HttpStatusCode.Ok, user, ADMIN.role.role );

@@ -25,7 +25,7 @@ router.post( '/login', uploadprofileImage, authController.login );
 router.post( '/forgotPassword', authController.forgotPassword );
 
 // User Profile
-router.get( '/getProfile/:userId', authMiddleware.tokenAuth, authController.getProfile );
+router.get( '/getProfile', authMiddleware.tokenAuth, authController.getProfile );
 
 // User Update Profile
 router.post( '/updateProfile', uploadprofileImage, authMiddleware.tokenAuth, authController.updateProfile );

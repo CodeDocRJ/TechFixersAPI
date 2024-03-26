@@ -2,7 +2,7 @@ const jwt = require( 'jsonwebtoken' );
 const TokenModel = require( '../models/tokenModel.js' );
 const { ERROR } = require( '../utils/message.js' );
 const { HttpStatusCode } = require( '../utils/code.js' );
-const { getErrorResult } = require( '../base/baseController.js' );
+const { getErrorResult, getResult } = require( '../base/baseController.js' );
 const config = require( "../config/config.js" );
 
 module.exports.tokenAuth = async ( req, res, next ) =>

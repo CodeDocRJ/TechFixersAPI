@@ -1,4 +1,4 @@
-const { getResult } = require( "../../base/baseController" );
+const { getResult, getErrorResult } = require( "../../base/baseController" );
 const UserModel = require( "../../models/userModel" );
 const { HttpStatusCode } = require( "../../utils/code" );
 const { ERROR, ADMIN } = require( "../../utils/message" );
@@ -9,7 +9,12 @@ module.exports.getTechnicianList = async ( req, res ) =>
     {
         const technicians = await UserModel.find( { role: "Tech" } );
 
-        return getResult( res, HttpStatusCode.Ok, technicians ? technicians : [], ADMIN.technician.list );
+        if ( technicians.length === 0 )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.technician.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, technicians, ADMIN.technician.list );
     } catch ( error )
     {
         console.error( "Error in get technician list : ", error );

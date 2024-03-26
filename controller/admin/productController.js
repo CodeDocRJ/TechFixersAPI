@@ -66,7 +66,12 @@ module.exports.getProductList = async ( req, res ) =>
     {
         const products = await ProductModel.find();
 
-        return getResult( res, HttpStatusCode.Ok, products ? products : [], ADMIN.product.list );
+        if ( products.length === 0 )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, products, ADMIN.product.list );
     } catch ( error )
     {
         console.error( "Error in get product list : ", error );
@@ -78,25 +83,27 @@ module.exports.updateProduct = async ( req, res ) =>
 {
     try
     {
-        const { productId } = req.params.productId;
+        const productId = req.params.productId;
         const { categoryId, name, type, brand, model, price, description, rating, productImage } = req.body;
 
-        const product = await ProductModel.findOne( { _id: productId } );
+        const product = await ProductModel.findById( productId );
 
         if ( !product )
         {
             return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product.notFound );
         }
 
-        const productCat = await ProductCategoryModel.findOne( { _id: categoryId } );
-
-        if ( !productCat )
+        if ( categoryId )
         {
-            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product_category.notFound );
+            const productCat = await ProductCategoryModel.findById( categoryId );
+
+            if ( !productCat )
+            {
+                return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product_category.notFound );
+            }
+
+            product.categoryId = categoryId;
         }
-
-
-        product.categoryId = categoryId ? categoryId : product.categoryId;
         product.name = name ? name : product.name;
         product.type = type ? type : product.type;
         product.brand = brand ? brand : product.brand;

@@ -33,7 +33,7 @@ const repairRequestSchema = new mongoose.Schema( {
   },
   requestStatus: {
     type: String,
-    enum: [ 'Assigned', 'Cancelled', 'Completed' ],
+    enum: [ 'Accepted', 'Assigned', 'Cancelled', 'Completed' ],
     default: null
   },
   addressOfRepair: {

@@ -9,10 +9,15 @@ module.exports.getRepairRequests = async ( req, res ) =>
     try
     {
         const techId = req.tech.id;
-        // const { techId } = req.body;
+
         const repairRequests = await RepairRequestModel.find( { techId: techId } ).lean();
 
-        return getResult( res, HttpStatusCode.Ok, repairRequests ? repairRequests : [], ADMIN.repair_category.list );
+        if ( repairRequests.length === 0 )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, repairRequests, ADMIN.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair requests : ", error );

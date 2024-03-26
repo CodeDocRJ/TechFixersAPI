@@ -1,0 +1,6 @@
+1. In /updateProfile/:userId API userName, email, password, phone both are can be update
+
+2. When Admin, User or Tech logout then token can expired ? otherwise can be delete record from database ?
+
+Remain APIS :-
+    /forgotPassword

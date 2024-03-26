@@ -9,7 +9,12 @@ module.exports.getProductCategory = async ( req, res ) =>
     {
         const categories = await ProductCategoryModel.find( {}, '_id catName catType categoryImage' );
 
-        return getResult( res, HttpStatusCode.Ok, categories ? categories : [], USER.product_category.list );
+        if ( !categories )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product_category.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, categories, USER.product_category.list );
     } catch ( error )
     {
         console.error( "Error in get product category : ", error );

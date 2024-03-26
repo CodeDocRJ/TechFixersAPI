@@ -30,7 +30,7 @@ module.exports.userAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( user.role === 'User' )
                     {
-                        const isBlacklisted = await TokenModel.findOne( { userId: user.id } );
+                        const isBlacklisted = await TokenModel.findOne( { userId: user._id } );
                         if ( isBlacklisted.token === null )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
@@ -43,7 +43,7 @@ module.exports.userAuthMiddleware = async ( req, res, next ) =>
                     }
                 } else
                 {
-                    return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
+                    return getErrorResult( res, HttpStatusCode.NotFound, "User not found" );
                 }
             } catch ( error )
             {

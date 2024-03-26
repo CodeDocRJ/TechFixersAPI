@@ -6,6 +6,7 @@ const { ERROR, user_name, auth } = require( '../utils/message' );
 const { generateHashPwd, generateAccessToken, comparePwd } = require( '../utils/authHelper' );
 
 const nodemailer = require( 'nodemailer' );
+const config = require( '../config/config' );
 
 const cloudinary = require( 'cloudinary' ).v2;
 
@@ -160,7 +161,7 @@ module.exports.login = async ( req, res ) =>
             await roleToken.save();
         }
 
-        return getResult( res, HttpStatusCode.Ok, { [ role.role ]: role, generateToken }, auth.login );
+        return getResult( res, HttpStatusCode.Ok, { [ role.role ]: role, accessToken: generateToken }, auth.login );
     } catch ( error )
     {
         console.error( "Error in login : ", error );
@@ -173,6 +174,12 @@ module.exports.getProfile = async ( req, res ) =>
     try
     {
         const userId = req.user.id;
+        // const user_id = req.params;
+
+        // if ( userId !== user_id )
+        // {
+        //     return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
+        // }
 
         const role = await UserModel.findById( userId );
         if ( !role )
@@ -288,33 +295,32 @@ module.exports.forgotPassword = async ( req, res ) =>
         const transporter = nodemailer.createTransport( {
             service: 'gmail',
             auth: {
-                user: 'dhruvi010munagala@gmail.com', // email address
-                pass: '@@DhruviMungala010@@', // email password
+                user: `${ config.nodemailer.user }`, // email address
+                pass: `${ config.nodemailer.password }`, // email password
             },
         } );
 
         const mailOptions = {
-            from: 'nensikumbhani015.frontbit@gmail.com',
+            from: `${ config.nodemailer.user }`,
             to: email,
             subject: 'Password Reset',
             html: `<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
              <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`
         };
 
+        console.log( "mailOptions: ", mailOptions );
         // Send email
+        console.log( "transporter: ", transporter );
         transporter.sendMail( mailOptions, ( error, info ) =>
         {
             if ( error )
             {
-                console.error( "Error in vujdfgbruiegbcv : ", error );
+                console.error( "Error in send mail : ", error );
                 return getResult( res, HttpStatusCode.InternalServerError, error.message, ERROR.internalServerError );
             } else
             {
                 console.log( 'Email sent: ' + info.response );
-                res.status( 200 ).json( {
-                    responseCode: 200,
-                    responseMessage: 'Password reset email sent successfully',
-                } ).send();
+                return getResult( res, HttpStatusCode.Ok, 1, "Password reset email sent successfully" );
             }
         } );
     } catch ( error )

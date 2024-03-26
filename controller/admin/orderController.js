@@ -9,7 +9,12 @@ module.exports.getOrderList = async ( req, res ) =>
     {
         const orders = await OrderModel.find();
 
-        return getResult( res, HttpStatusCode.Ok, orders ? orders : [], USER.order.list );
+        if ( orders.length === 0 )
+        {
+            return getResult( res, HttpStatusCode.NotFound, USER.order.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, orders, USER.order.list );
 
     } catch ( error )
     {

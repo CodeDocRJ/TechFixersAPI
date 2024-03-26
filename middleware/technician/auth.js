@@ -30,7 +30,7 @@ module.exports.TechnicianAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( tech.role === 'Tech' )
                     {
-                        const isBlacklisted = await TokenModel.findOne( { userId: tech.id } );
+                        const isBlacklisted = await TokenModel.findOne( { userId: tech._id } );
                         if ( isBlacklisted.token === null )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
@@ -43,7 +43,7 @@ module.exports.TechnicianAuthMiddleware = async ( req, res, next ) =>
                     }
                 } else
                 {
-                    return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
+                    return getErrorResult( res, HttpStatusCode.NotFound, "Technician not found" );
                 }
             } catch ( error )
             {

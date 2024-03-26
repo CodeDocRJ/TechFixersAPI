@@ -4,7 +4,7 @@ const repairReqRouter = express.Router();
 
 repairReqRouter.post( '/getAllRepairRequests', getAllRepairRequests );
 
-// repairReqRouter.post( '/acceptOrCancleRepairRequest/:repairId', acceptOrCancleRepairRequest );
+repairReqRouter.post( '/acceptOrCancleRepairRequest/:repairId', acceptOrCancleRepairRequest );
 
 repairReqRouter.post( '/assignRepairToTech', assignRepairToTech );
 

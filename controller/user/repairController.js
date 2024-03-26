@@ -10,7 +10,12 @@ module.exports.getRepairCategories = async ( req, res ) =>
     {
         const repairCategories = await RepairCategoryModel.find();
 
-        return getResult( res, HttpStatusCode.Ok, repairCategories ? repairCategories : [], ADMIN.repair_category.list );
+        if ( repairCategories.length === 0 )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
+        }
+
+        return getResult( res, HttpStatusCode.Ok, repairCategories, ADMIN.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair categories : ", error );

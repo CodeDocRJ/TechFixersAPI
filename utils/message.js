@@ -36,9 +36,11 @@ module.exports = {
         },
         technician: {
             list: "Technician list retrieved successfully",
+            notFound: "Technician not found"
         },
         user: {
             list: "User list retrieved successfully",
+            notFound: "User not found"
         },
         product: {
             add: "Product added successfully",
@@ -67,15 +69,17 @@ module.exports = {
         },
         order: {
             submit: "Order submitted successfully",
-            list: "Order retrieved successfully"
+            list: "Order retrieved successfully",
+            notFound: "Order not found"
         },
         repair_req: {
             submit: "Repair request submitted successfully",
             list: "Repair request list retrieved successfully",
             notFound: "Repair request not found",
             accept: "Repair request accepted",
-            cancle: "Repair request cancelled",
-            assign: "Repair request accepted. And assigned to technician successfully",
+            cancle: "Repair request cancelled successfully",
+            accept: "Repair request accepted successfully",
+            assign: "Repair request assigned to technician successfully",
         }
     }
 };

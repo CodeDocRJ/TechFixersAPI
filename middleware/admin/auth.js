@@ -43,7 +43,7 @@ module.exports.adminAuthMiddleware = async ( req, res, next ) =>
                     }
                 } else
                 {
-                    return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
+                    return getErrorResult( res, HttpStatusCode.NotFound, "Admin not found" );
                 }
             } catch ( error )
             {
