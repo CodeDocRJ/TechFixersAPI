@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require( 'mongoose' );
 
-const orderSchema = new mongoose.Schema({
-    userId: String,
+const orderSchema = new mongoose.Schema( {
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     firstName: String,
     lastName: String,
     productId: {
@@ -10,9 +13,22 @@ const orderSchema = new mongoose.Schema({
     },
     quantity: Number,
     address: String,
-    orderPlaceDateTime: Date
-});
+    orderPlaceDateTime: {
+        type: String,
+        required: false,
+        validate: {
+            validator: function ( v )
+            {
+                // Date of birth format: DD-MM-YYYY
+                return /^\d{2}-\d{2}-\d{4}$/.test( v );
+            },
+            message: props => `${ props.value } is not a valid date of birth! (DD-MM-YYYY)`
+        }
+    }
+}, {
+    timestamps: true,
+} );
 
-const Order = mongoose.model('Order', orderSchema);
+const OrderModel = mongoose.model( 'Order', orderSchema );
 
-module.exports = Order;
+module.exports = OrderModel;

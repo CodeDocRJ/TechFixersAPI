@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require( 'mongoose' );
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    firstName: {
+      type: String,
+      required: false,
+    },
+    lastName: {
+      type: String,
+      required: false,
+    },
     profileImage: {
       type: String,
       required: false,
@@ -29,11 +37,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
       validate: {
-        validator: function (v) {
+        validator: function ( v )
+        {
           // Date of birth format: DD-MM-YYYY
-          return /^\d{2}-\d{2}-\d{4}$/.test(v);
+          return /^\d{2}-\d{2}-\d{4}$/.test( v );
         },
-        message: props => `${props.value} is not a valid date of birth! (DD-MM-YYYY)`
+        message: props => `${ props.value } is not a valid date of birth! (DD-MM-YYYY)`
       }
     },
     address: {
@@ -56,7 +65,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['Admin', 'User', 'Tech'],
+      enum: [ 'Admin', 'User', 'Tech' ],
       required: true,
       default: 'User',
     },
@@ -65,7 +74,16 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // Default value is false, all the normal signup
     },
-    token: String,
+    latitude: {
+      required: false,
+      type: Number,
+      default: 0.00, // Default value is false, all the normal signup
+    },
+    logngitude: {
+      required: false,
+      type: Number,
+      default: 0.00, // Default value is false, all the normal signup
+    },
   },
   {
     timestamps: true,
@@ -73,7 +91,7 @@ const userSchema = new mongoose.Schema(
 );
 
 //this is creation of the collection/model
-const UserModel = mongoose.model('User', userSchema);
+const UserModel = mongoose.model( 'User', userSchema );
 
 module.exports = UserModel;
 // export default mongoose.model("User", userSchema);

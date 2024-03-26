@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require( 'mongoose' );
 
-const productCategorySchema = new mongoose.Schema({
+const productCategorySchema = new mongoose.Schema( {
     catName: String,
     catType: String,
     categoryImage: String
-});
+}, {
+    timestamps: true,
+} );
 
-const ProductCategory = mongoose.model('ProductCategory', productCategorySchema);
+const ProductCategoryModel = mongoose.model( 'ProductCategory', productCategorySchema );
 
-module.exports = ProductCategory;
+module.exports = ProductCategoryModel;
