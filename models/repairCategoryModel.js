@@ -13,6 +13,10 @@ const repairCategorySchema = new mongoose.Schema(
         approxPrice: {
             type: Number,
             required: true
+        },
+        description: {
+            type: String,
+            required: false,
         }
     }, {
     timestamps: true

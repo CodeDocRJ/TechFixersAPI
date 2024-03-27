@@ -130,17 +130,12 @@ module.exports.login = async ( req, res ) =>
         }
         if ( !role )
         {
-            // res.status( 401 ).json( {
-            //     responseCode: 401,
-            //     responseMessage: 'User not found with this email or username',
-            // } ).send();
             return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
         }
 
         const validPassword = await comparePwd( password, role.password );
         if ( !validPassword )
         {
-            // return res.status( 401 ).json( { message: 'Invalid credentials' } );
             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.invalid );
         }
 
@@ -161,7 +156,30 @@ module.exports.login = async ( req, res ) =>
             await roleToken.save();
         }
 
-        return getResult( res, HttpStatusCode.Ok, { [ role.role ]: role, accessToken: generateToken }, auth.login );
+        const data = {
+            _id: role._id,
+            userName: role.userName,
+            email: role.email,
+            password: role.password,
+            phone: role.phone,
+            dateOfBirth: role.dateOfBirth,
+            address: {
+                houseNumber: role.address.houseNumber,
+                streetName: role.address.streetName,
+                city: role.address.city,
+                postCode: role.address.postCode
+            },
+            role: role.role,
+            isVerified: role.isVerified,
+            latitude: role.latitude,
+            longitude: role.longitude,
+            createdAt: role.createdAt,
+            updatedAt: role.updatedAt,
+            __v: role.__v,
+            accessToken: generateToken
+        };
+
+        return getResult( res, HttpStatusCode.Ok, data, auth.login );
     } catch ( error )
     {
         console.error( "Error in login : ", error );
@@ -308,9 +326,6 @@ module.exports.forgotPassword = async ( req, res ) =>
              <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`
         };
 
-        console.log( "mailOptions: ", mailOptions );
-        // Send email
-        console.log( "transporter: ", transporter );
         transporter.sendMail( mailOptions, ( error, info ) =>
         {
             if ( error )

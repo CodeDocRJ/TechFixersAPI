@@ -9,7 +9,11 @@ module.exports.addRepairCategory = async ( req, res ) =>
 {
     try
     {
-        const { applianceName, approxPrice } = req.body;
+        const { applianceName, approxPrice, description } = req.body;
+
+        const applianceImage = req.file;
+
+        let createdValue = {};
 
         const isRepaircategory = await RepairCategoryModel.findOne( { applianceName: applianceName } );
 
@@ -18,10 +22,18 @@ module.exports.addRepairCategory = async ( req, res ) =>
             return getErrorResult( res, HttpStatusCode.BadRequest, ADMIN.repair_category.alreadAxists );
         }
 
-        const result = await cloudinary.uploader.upload( req.file.path, { folder: 'Products' } );
+        if ( applianceImage )
+        {
+            const result = await cloudinary.uploader.upload( req.file.path, { folder: 'Products' } );
+            createdValue.applianceImage = result.secure_url;
+        }
+        if ( description )
+        {
+            createdValue.description = description;
+        }
 
         const addRepairCategory = new RepairCategoryModel( {
-            applianceName, applianceImage: result.secure_url, approxPrice
+            applianceName, approxPrice, ...createdValue
         } );
         await addRepairCategory.save();
 
@@ -78,7 +90,7 @@ module.exports.updateRepairCategory = async ( req, res ) =>
     try
     {
         const { repairCategoryId } = req.params;
-        const { applianceName, approxPrice } = req.body;
+        const { applianceName, approxPrice, description } = req.body;
         const applianceImage = req.file;
 
         let validationCondition = { _id: { $ne: repairCategoryId } };
@@ -103,6 +115,7 @@ module.exports.updateRepairCategory = async ( req, res ) =>
             repairCategory.applianceName = applianceName;
         }
         if ( approxPrice ) { repairCategory.approxPrice = approxPrice; }
+        if ( description ) { repairCategory.description = description; }
 
         if ( applianceImage )
         {

@@ -25,10 +25,10 @@ app.use( '/admin', adminAuthRouter );
 app.use( '/user', userAuthRouter );
 app.use( '/tech', techAuthRouter );
 
-// app.get( "/", async ( req, res ) =>
-// {
-//     res.send( "HELLOW RJ" );
-// } );
+app.get( "/", async ( req, res ) =>
+{
+    res.send( "HELLOW RJ" );
+} );
 
 app.listen( port, ( req, res ) =>
 {

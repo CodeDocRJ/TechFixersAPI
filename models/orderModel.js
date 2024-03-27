@@ -25,7 +25,6 @@ const orderSchema = new mongoose.Schema( {
             message: props => `${ props.value } is not a valid date of birth! (DD-MM-YYYY)`
         }
     }
-    //it would be good to have date, time and place as separate fields
 }, {
     timestamps: true,
 } );
