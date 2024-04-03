@@ -80,6 +80,15 @@ module.exports = {
             cancle: "Repair request cancelled successfully",
             accept: "Repair request accepted successfully",
             assign: "Repair request assigned to technician successfully",
+        },
+        card: {
+            add: "Card added successfully",
+            list: "Card list retrieved successfully",
+            get: "Card list retrieved successfully",
+            notFound: "Card not found",
+            update: "Card updated successfully",
+            delete: "Card deleted successfully",
+            alreadAxists: "Card already exists"
         }
     }
 };

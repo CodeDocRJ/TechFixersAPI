@@ -146,7 +146,8 @@ module.exports.deleteRepairCategory = async ( req, res ) =>
             return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
         }
 
-        await repairCategory.deleteOne();
+        // await repairCategory.deleteOne();
+        await RepairCategoryModel.deleteOne( { _id: repairCategoryId } );
 
         return getResult( res, HttpStatusCode.Ok, 1, ADMIN.repair_category.delete );
     } catch ( error )

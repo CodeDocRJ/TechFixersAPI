@@ -18,6 +18,10 @@ module.exports.getAllRepairRequests = async ( req, res ) =>
             .sort( { createdAt: sort_direction } )
             .skip( skip )
             .limit( limit )
+            .populate( {
+                path: "userId",
+                select: "userName email phone"
+            } )
             .lean();
 
         if ( repairRequests.length === 0 )

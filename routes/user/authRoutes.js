@@ -4,6 +4,7 @@ const productCategoryRouter = require( './productCategoryRoutes' );
 const productRouter = require( './productRoutes' );
 const orderRouter = require( './orderRoutes' );
 const repairReqRouter = require( './submitRepairRequestRoutes' );
+const cardRouter = require( './cardRoutes' );
 
 const userAuthRouter = express.Router();
 
@@ -18,5 +19,9 @@ userAuthRouter.use( '/', userAuthMiddleware, orderRouter );
 
 // repair request submit
 userAuthRouter.use( '/', userAuthMiddleware, repairReqRouter );
+
+// card
+userAuthRouter.use( '/', userAuthMiddleware, cardRouter );
+
 
 module.exports = userAuthRouter;

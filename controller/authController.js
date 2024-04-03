@@ -35,7 +35,7 @@ module.exports.signup = async ( req, res ) =>
 {
     try
     {
-        const { userName, email, password, phone, role, dateOfBirth, address, isVerified } = req.body;
+        const { userName, email, password, phone, role, dateOfBirth, address, isVerified, firstName, lastName } = req.body;
 
         let profileImage = req.file;
 
@@ -85,6 +85,8 @@ module.exports.signup = async ( req, res ) =>
 
             createdValue.profileImage = result.secure_url;
         }
+        if ( firstName ) { createdValue.firstName = firstName; }
+        if ( lastName ) { createdValue.lastName = lastName; }
 
         const newUser = new UserModel( {
             userName,
@@ -96,7 +98,7 @@ module.exports.signup = async ( req, res ) =>
         } );
         await newUser.save();
 
-        return getResult( res, HttpStatusCode.BadRequest, newUser, `${ role ? role : "User" } created successfully` );
+        return getResult( res, HttpStatusCode.Ok, newUser, `${ role ? role : "User" } created successfully` );
     } catch ( error )
     {
         console.error( "Error in signup : ", error );
@@ -173,6 +175,8 @@ module.exports.login = async ( req, res ) =>
             isVerified: role.isVerified,
             latitude: role.latitude,
             longitude: role.longitude,
+            firstName: role.firstName,
+            lastName: role.lastName,
             createdAt: role.createdAt,
             updatedAt: role.updatedAt,
             __v: role.__v,
@@ -276,7 +280,31 @@ module.exports.updateProfile = async ( req, res ) =>
 
         await user.save();
 
-        return getResult( res, HttpStatusCode.Ok, { [ user.role ]: user }, auth.updateProfile );
+        const data = {
+            _id: user._id,
+            userName: user.userName,
+            email: user.email,
+            password: user.password,
+            phone: user.phone,
+            dateOfBirth: user.dateOfBirth,
+            address: {
+                houseNumber: user.address.houseNumber,
+                streetName: user.address.streetName,
+                city: user.address.city,
+                postCode: user.address.postCode
+            },
+            role: user.role,
+            isVerified: user.isVerified,
+            latitude: user.latitude,
+            longitude: user.longitude,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            __v: user.__v
+        };
+
+        return getResult( res, HttpStatusCode.Ok, data, auth.updateProfile );
     } catch ( error )
     {
         console.error( "Error in get profile : ", error );
