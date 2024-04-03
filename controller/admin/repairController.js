@@ -20,9 +20,10 @@ module.exports.getAllRepairRequests = async ( req, res ) =>
             .limit( limit )
             .populate( {
                 path: "userId",
-                select: "userName email phone"
+                select: "userName email phone firstName lastName"
             } )
-            .lean();
+            .lean()
+            .exec();
 
         if ( repairRequests.length === 0 )
         {
