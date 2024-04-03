@@ -31,7 +31,7 @@ module.exports.TechnicianAuthMiddleware = async ( req, res, next ) =>
                     if ( tech.role === 'Tech' )
                     {
                         const isBlacklisted = await TokenModel.findOne( { userId: tech._id } );
-                        if ( isBlacklisted.token === null )
+                        if ( isBlacklisted.token === '' )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
                         }

@@ -27,7 +27,7 @@ module.exports.tokenAuth = async ( req, res, next ) =>
                 req.user = decoded;
 
                 const isBlacklisted = await TokenModel.findOne( { userId: req.user.id } );
-                if ( isBlacklisted.token === null )
+                if ( isBlacklisted.token === '' )
                 {
                     return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
                 }

@@ -317,12 +317,15 @@ module.exports.logOut = async ( req, res ) =>
     try
     {
         const userId = req.user.id;
+        console.log( "userId: ", userId );
 
         const isToken = await TokenModel.findOne( { userId: userId } );
 
-        isToken.token = null;
-
-        await isToken.save();
+        if ( isToken )
+        {
+            isToken.token = '';
+            await isToken.save();
+        }
 
         return getErrorResult( res, HttpStatusCode.Ok, auth.logout );
     } catch ( error )
