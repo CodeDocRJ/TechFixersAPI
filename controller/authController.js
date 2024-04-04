@@ -164,6 +164,7 @@ module.exports.login = async ( req, res ) =>
             email: role.email,
             password: role.password,
             phone: role.phone,
+            profileImage: role.profileImage,
             dateOfBirth: role.dateOfBirth,
             address: {
                 houseNumber: role.address.houseNumber,
@@ -203,15 +204,41 @@ module.exports.getProfile = async ( req, res ) =>
         //     return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
         // }
 
-        const role = await UserModel.findById( userId );
-        if ( !role )
+        const user = await UserModel.findById( userId );
+        if ( !user )
         {
             return getErrorResult( res, HttpStatusCode.NotFound, ERROR.notFound );
         }
 
         const token = await req.header( 'Authorization' ).replace( 'Bearer ', '' );
 
-        return getResult( res, HttpStatusCode.Ok, { [ role.role ]: role, token }, auth.getProfile );
+        const data = {
+            _id: user._id,
+            userName: user.userName,
+            email: user.email,
+            password: user.password,
+            phone: user.phone,
+            profileImage: user.profileImage,
+            dateOfBirth: user.dateOfBirth,
+            address: {
+                houseNumber: user.address.houseNumber,
+                streetName: user.address.streetName,
+                city: user.address.city,
+                postCode: user.address.postCode
+            },
+            role: user.role,
+            isVerified: user.isVerified,
+            latitude: user.latitude,
+            longitude: user.longitude,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            __v: user.__v,
+            token: token
+        };
+
+        return getResult( res, HttpStatusCode.Ok, data, auth.getProfile );
     } catch ( error )
     {
         console.error( "Error in get profile : ", error );
@@ -286,6 +313,7 @@ module.exports.updateProfile = async ( req, res ) =>
             email: user.email,
             password: user.password,
             phone: user.phone,
+            profileImage: user.profileImage,
             dateOfBirth: user.dateOfBirth,
             address: {
                 houseNumber: user.address.houseNumber,
