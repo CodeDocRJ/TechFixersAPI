@@ -2,7 +2,8 @@ const { getErrorResult, getResult } = require( "../../base/baseController" );
 const OrderModel = require( "../../models/orderModel" );
 const ProductModel = require( "../../models/productModel" );
 const { HttpStatusCode } = require( "../../utils/code" );
-const { ADMIN, USER, ERROR } = require( "../../utils/message" );
+const { ADMIN, USER, ERROR, NOTIFICATION } = require( "../../utils/message" );
+const { sendNotificationToMultiples } = require( "../../utils/notification" );
 
 module.exports.submitOrder = async ( req, res ) =>
 {
@@ -28,7 +29,12 @@ module.exports.submitOrder = async ( req, res ) =>
         } );
         await newOrder.save();
 
-        return getResult( res, HttpStatusCode.Ok, newOrder, USER.order.submit );
+        const admins = await UserModel.find( { role: "Admin" } );
+        const adminIds = admins.map( admin => admin._id );
+
+        const notification = await sendNotificationToMultiples( adminIds, "Submit order", NOTIFICATION.order );
+
+        return getResult( res, HttpStatusCode.Ok, { newOrder, notification }, USER.order.submit );
     } catch ( error )
     {
         console.error( "Error in submit order : ", error );

@@ -30,7 +30,7 @@ module.exports.updateRepairStatus = async ( req, res ) =>
     try
     {
         const techId = req.tech.id;
-        const { price, repairId } = req.body;
+        const { price, repairId, note } = req.body;
 
         const repairRequest = await RepairRequestModel.findOne( { _id: repairId, techId: techId } );
         if ( !repairRequest )
@@ -46,12 +46,15 @@ module.exports.updateRepairStatus = async ( req, res ) =>
                 return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
             }
 
-            repairCat.approxPrice += price;
+            repairCat.extraPrice = price;
+            repairCat.totalPrice = repairCat.approxPrice + price;
+            repairCat.note = note;
 
             await repairCat.save();
         }
 
         repairRequest.requestStatus = "Completed";
+        repairRequest.status = "Completed";
         await repairRequest.save();
 
         return getResult( res, HttpStatusCode.Ok, repairRequest, ADMIN.repair_category.status );

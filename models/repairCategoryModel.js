@@ -14,6 +14,18 @@ const repairCategorySchema = new mongoose.Schema(
             type: Number,
             required: true
         },
+        extraPrice: {
+            type: Number,
+            required: false
+        },
+        totalPrice: {
+            type: Number,
+            required: false
+        },
+        note: {
+            type: String,
+            required: false,
+        },
         description: {
             type: String,
             required: false,

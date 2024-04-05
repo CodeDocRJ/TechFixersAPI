@@ -28,8 +28,8 @@ const repairRequestSchema = new mongoose.Schema( {
   },
   status: {
     type: String,
-    enum: [ 'Submitted', 'Pending', 'In Progress', 'Completed' ],
-    default: 'Submitted',
+    enum: [ 'Upcomming', 'Cancelled', 'Completed' ],
+    default: 'Upcomming',
   },
   requestStatus: {
     type: String,

@@ -62,6 +62,9 @@ module.exports = {
             alreadAxists: "Repair category already axists",
             status: "Repair category status updated successfully",
         },
+        invoice: {
+            details: "Invoice details retrieved successfully"
+        }
     },
     USER: {
         product_category: {
@@ -80,6 +83,8 @@ module.exports = {
             cancle: "Repair request cancelled successfully",
             accept: "Repair request accepted successfully",
             assign: "Repair request assigned to technician successfully",
+            mode: "Repair request mode updated successfully",
+            invalid: "Invalid repair request mode"
         },
         card: {
             add: "Card added successfully",
@@ -90,5 +95,13 @@ module.exports = {
             delete: "Card deleted successfully",
             alreadAxists: "Card already exists"
         }
+    },
+    NOTIFICATION: {
+        submit: "Repair request has been submitted by the user",
+        accepted: "Your repair request has been accepted by the admin",
+        cancle: "Your repair request has been cancelled by the admin",
+        assign: "Repair request has been assigned you by the admin",
+        complete: "Repair request has been completed by the technician",
+        order: "Order has been completed by the user",
     }
 };

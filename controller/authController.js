@@ -7,6 +7,7 @@ const { generateHashPwd, generateAccessToken, comparePwd } = require( '../utils/
 
 const nodemailer = require( 'nodemailer' );
 const config = require( '../config/config' );
+const { sendNotificationToSingle } = require( '../utils/notification' );
 
 const cloudinary = require( 'cloudinary' ).v2;
 
@@ -122,7 +123,7 @@ module.exports.login = async ( req, res ) =>
 {
     try
     {
-        const { emailOrUsername, password } = req.body;
+        const { emailOrUsername, password, deviceToken } = req.body;
 
         let role = await UserModel.findOne( { email: emailOrUsername } );
 
@@ -157,6 +158,9 @@ module.exports.login = async ( req, res ) =>
             } );
             await roleToken.save();
         }
+
+        role.deviceToken = deviceToken;
+        await role.save();
 
         const data = {
             _id: role._id,
@@ -400,6 +404,26 @@ module.exports.forgotPassword = async ( req, res ) =>
     } catch ( error )
     {
         console.error( "Error in forgot pwd : ", error );
+        return getResult( res, HttpStatusCode.InternalServerError, error.message, ERROR.internalServerError );
+    }
+};
+
+module.exports.sendNotification = async ( req, res ) =>
+{
+    try
+    {
+        const { title, message } = req.body;
+
+        // const users = await UserModel.find( { $nor: [ { deviceToken: null } ] } );
+        // const deviceTokens = users.map( usr => usr.deviceToken );
+        // const multipleNotification = await sendNotificationToMultiples( deviceTokens, title, message );
+
+        const user = await UserModel.findOne( { deviceToken: 'iphone 11' } );
+        const singleNotification = await sendNotificationToSingle( user.deviceToken, title, message );
+
+        return getResult( res, HttpStatusCode.Ok, { singleNotification }, "Notification sent" );
+    } catch ( error )
+    {
         return getResult( res, HttpStatusCode.InternalServerError, error.message, ERROR.internalServerError );
     }
 };

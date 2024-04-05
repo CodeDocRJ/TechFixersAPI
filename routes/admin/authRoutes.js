@@ -8,6 +8,7 @@ const roleRouter = require( './roleRoutes' );
 const orderRouter = require( './orderRoutes' );
 const repairCategoryRouter = require( './repairCategoryRoutes' );
 const repairReqRouter = require( './repairRoutes' );
+const invoiceDetailRouter = require( './invoiceDetailRoutes' );
 
 const adminAuthRouter = express.Router();
 
@@ -34,5 +35,8 @@ adminAuthRouter.use( '/', adminAuthMiddleware, repairCategoryRouter );
 
 // repair request
 adminAuthRouter.use( '/', adminAuthMiddleware, repairReqRouter );
+
+// invoice details
+adminAuthRouter.use( '/', adminAuthMiddleware, invoiceDetailRouter );
 
 module.exports = adminAuthRouter;

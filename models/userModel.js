@@ -86,7 +86,7 @@ const userSchema = new mongoose.Schema(
     },
     deviceToken: {
       type: String,
-      required: false,
+      default: null
     }
   },
   {
@@ -98,4 +98,3 @@ const userSchema = new mongoose.Schema(
 const UserModel = mongoose.model( 'User', userSchema );
 
 module.exports = UserModel;
-// export default mongoose.model("User", userSchema);
