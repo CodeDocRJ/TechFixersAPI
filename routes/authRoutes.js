@@ -25,7 +25,7 @@ router.get( '/getProfile', authMiddleware.tokenAuth, authController.getProfile )
 router.post( '/updateProfile', uploadprofileImage, authMiddleware.tokenAuth, authController.updateProfile );
 
 // User Logout
-router.get( '/logOut', authMiddleware.tokenAuth, authController.logOut );
+router.post( '/logOut', authMiddleware.tokenAuth, authController.logOut );
 
 // Notification
 // router.post( '/notification', authController.sendNotification );

@@ -1,6 +1,7 @@
 const { getErrorResult, getResult } = require( "../../base/baseController" );
 const OrderModel = require( "../../models/orderModel" );
 const ProductModel = require( "../../models/productModel" );
+const UserModel = require( "../../models/userModel" );
 const { HttpStatusCode } = require( "../../utils/code" );
 const { ADMIN, USER, ERROR, NOTIFICATION } = require( "../../utils/message" );
 const { sendNotificationToMultiples } = require( "../../utils/notification" );
