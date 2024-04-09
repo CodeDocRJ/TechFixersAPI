@@ -9,7 +9,7 @@ const orderRouter = require( './orderRoutes' );
 const repairCategoryRouter = require( './repairCategoryRoutes' );
 const repairReqRouter = require( './repairRoutes' );
 const invoiceDetailRouter = require( './invoiceDetailRoutes' );
-const notificationRouter = require( './notificationROutes' );
+const notificationRouter = require( './notificationRoutes' );
 
 const adminAuthRouter = express.Router();
 
