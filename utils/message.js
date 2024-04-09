@@ -103,5 +103,8 @@ module.exports = {
         assign: "Repair request has been assigned you by the admin",
         complete: "Repair request has been completed by the technician",
         order: "Order has been completed by the user",
+        list: "Notification list retrieved successfully",
+        get: "Notification retrieved successfully",
+        notFound: "Notification not found",
     }
 };
