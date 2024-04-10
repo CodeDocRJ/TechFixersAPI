@@ -349,14 +349,12 @@ module.exports.logOut = async ( req, res ) =>
     try
     {
         const userId = req.user.id;
-        console.log( "userId: ", userId );
 
         const isToken = await TokenModel.findOne( { userId: userId } );
 
         if ( isToken )
         {
-            isToken.token = '';
-            await isToken.save();
+            await TokenModel.updateOne( { userId: userId }, { token: null } );
         }
 
         return getErrorResult( res, HttpStatusCode.Ok, auth.logout );

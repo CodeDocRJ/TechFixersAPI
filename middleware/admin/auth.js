@@ -31,7 +31,7 @@ module.exports.adminAuthMiddleware = async ( req, res, next ) =>
                     if ( admin.role === 'Admin' )
                     {
                         const isBlacklisted = await TokenModel.findOne( { userId: admin.id } );
-                        if ( isBlacklisted.token === '' )
+                        if ( isBlacklisted.token === null )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
                         }
