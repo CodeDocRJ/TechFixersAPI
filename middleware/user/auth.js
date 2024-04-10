@@ -30,8 +30,8 @@ module.exports.userAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( user.role === 'User' )
                     {
-                        const isBlacklisted = await TokenModel.findOne( { userId: user._id } );
-                        if ( isBlacklisted.token === null )
+                        const isToken = await TokenModel.findOne( { userId: user._id } );
+                        if ( Date.now() >= isToken.expiresIn )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
                         }

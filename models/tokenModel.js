@@ -10,10 +10,9 @@ const tokenSchema = new mongoose.Schema(
             type: String,
             required: false,
         },
-        createdAt: {
+        expiresIn: {
             type: Date,
-            default: Date.now,
-            expires: '7d'
+            required: false
         } // Set expiration time for blacklisted tokens
     }, {
     timestamps: true,

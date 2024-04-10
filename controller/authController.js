@@ -148,13 +148,13 @@ module.exports.login = async ( req, res ) =>
 
         if ( existingToken )
         {
-            existingToken.token = generateToken;
-            await existingToken.save();
+            await TokenModel.updateOne( { userId: role._id }, { token: generateToken, expiresIn: new Date( Date.now() + ( 5 * 100000 ) ) } );
         } else
         {
             const roleToken = new TokenModel( {
                 userId: role._id,
-                token: generateToken
+                token: generateToken,
+                expiresIn: new Date( Date.now() + ( 5 * 100000 ) )
             } );
             await roleToken.save();
         }
@@ -354,7 +354,7 @@ module.exports.logOut = async ( req, res ) =>
 
         if ( isToken )
         {
-            await TokenModel.updateOne( { userId: userId }, { token: null } );
+            await TokenModel.updateOne( { userId: userId }, { expiresIn: new Date( Date.now() - 1000 ) } );
         }
 
         return getErrorResult( res, HttpStatusCode.Ok, auth.logout );

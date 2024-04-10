@@ -26,8 +26,9 @@ module.exports.tokenAuth = async ( req, res, next ) =>
                 const decoded = jwt.verify( token, config.jwt.secret_key );
                 req.user = decoded;
 
-                const isBlacklisted = await TokenModel.findOne( { userId: req.user.id } );
-                if ( isBlacklisted.token === null )
+                const isToken = await TokenModel.findOne( { userId: req.user.id } );
+
+                if ( Date.now() >= isToken.expiresIn )
                 {
                     return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
                 }
