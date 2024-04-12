@@ -17,13 +17,14 @@ module.exports.uploadprofileImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
-        {
-            cb( null, true );
-        } else
-        {
-            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
-        }
+        // if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' )
+        // {
+        //     cb( null, true );
+        // } else
+        // {
+        //     cb( new Error( 'Only PNG, JPG and JPEG images are allowed' ) );
+        // }
+        cb( null, true );
     }
 } ).single( 'profileImage' );
 
@@ -34,13 +35,14 @@ module.exports.uploadcategoryImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
-        {
-            cb( null, true );
-        } else
-        {
-            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
-        }
+        // if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' )
+        // {
+        //     cb( null, true );
+        // } else
+        // {
+        //     cb( new Error( 'Only PNG, JPG and JPEG images are allowed' ) );
+        // }
+        cb( null, true );
     }
 } ).single( 'categoryImage' );
 
@@ -51,13 +53,14 @@ module.exports.uploadproductImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
-        {
-            cb( null, true );
-        } else
-        {
-            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
-        }
+        // if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' )
+        // {
+        //     cb( null, true );
+        // } else
+        // {
+        //     cb( new Error( 'Only PNG, JPG and JPEG images are allowed' ) );
+        // }
+        cb( null, true );
     }
 } ).single( 'productImage' );
 
@@ -68,12 +71,13 @@ module.exports.uploadapplianceImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
-        {
-            cb( null, true );
-        } else
-        {
-            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
-        }
+        // if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' )
+        // {
+        //     cb( null, true );
+        // } else
+        // {
+        //     cb( new Error( 'Only PNG, JPG and JPEG images are allowed' ) );
+        // }
+        cb( null, true );
     }
 } ).single( 'applianceImage' );
