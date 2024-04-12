@@ -22,12 +22,13 @@ module.exports.getAllRepairRequests = async ( req, res ) =>
             .populate( {
                 path: "userId",
                 select: "userName email phone firstName lastName",
-                as: "userData"
+                // Rename userId to userData
+                options: { virtuals: { userData: "userName email phone firstName lastName" } }
             } )
             .populate( {
                 path: "repairCategoryId",
                 select: "applianceName",
-                as: "repairCatData"
+                options: { virtuals: { repairCatData: "applianceName" } }
             } )
             .lean()
             .exec();
