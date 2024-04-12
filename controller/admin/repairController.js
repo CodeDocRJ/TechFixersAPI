@@ -35,7 +35,19 @@ module.exports.getAllRepairRequests = async ( req, res ) =>
             return getErrorResult( res, HttpStatusCode.NotFound, USER.repair_req.notFound );
         }
 
-        return getResult( res, HttpStatusCode.Ok, repairRequests, ADMIN.repair_category.list );
+        const modifiedRepairRequests = repairRequests.map( request => ( {
+            ...request,
+            userData: request.userId,
+            repairCategoryData: request.repairCategoryId,
+        } ) );
+
+        modifiedRepairRequests.forEach( request =>
+        {
+            delete request.userId;
+            delete request.repairCategoryId;
+        } );
+
+        return getResult( res, HttpStatusCode.Ok, modifiedRepairRequests, ADMIN.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair request list : ", error );

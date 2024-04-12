@@ -30,13 +30,16 @@ module.exports.userAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( user.role === 'User' )
                     {
-                        const isToken = await TokenModel.findOne( { userId: user._id } );
-                        if ( Date.now() >= isToken.expiresIn )
+                        const userToken = await TokenModel.findOne( { userId: user._id } );
+                        const expiresInMilliseconds = Date.parse( userToken.expiresIn );
+                        if ( Date.now() > expiresInMilliseconds )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
+                        } else
+                        {
+                            req.user = user;
+                            next();
                         }
-                        req.user = user;
-                        next();
                     } else
                     {
                         return getErrorResult( res, HttpStatusCode.Forbidden, ERROR.headers.userAuth );

@@ -30,13 +30,16 @@ module.exports.adminAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( admin.role === 'Admin' )
                     {
-                        const isToken = await TokenModel.findOne( { userId: admin.id } );
-                        if ( Date.now() >= isToken.expiresIn )
+                        const adminToken = await TokenModel.findOne( { userId: admin.id } );
+                        const expiresInMilliseconds = Date.parse( adminToken.expiresIn );
+                        if ( Date.now() > expiresInMilliseconds )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
+                        } else
+                        {
+                            req.admin = admin;
+                            next();
                         }
-                        req.admin = admin;
-                        next();
                     } else
                     {
                         return getErrorResult( res, HttpStatusCode.Forbidden, ERROR.headers.adminAuth );

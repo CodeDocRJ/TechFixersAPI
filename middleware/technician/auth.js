@@ -30,13 +30,16 @@ module.exports.TechnicianAuthMiddleware = async ( req, res, next ) =>
                 {
                     if ( tech.role === 'Tech' )
                     {
-                        const isToken = await TokenModel.findOne( { userId: tech._id } );
-                        if ( Date.now() >= isToken.expiresIn )
+                        const techToken = await TokenModel.findOne( { userId: tech._id } );
+                        const expiresInMilliseconds = Date.parse( techToken.expiresIn );
+                        if ( Date.now() > expiresInMilliseconds )
                         {
                             return getErrorResult( res, HttpStatusCode.Unauthorize, ERROR.headers.blackListToken );
+                        } else
+                        {
+                            req.tech = tech;
+                            next();
                         }
-                        req.tech = tech;
-                        next();
                     } else
                     {
                         return getErrorResult( res, HttpStatusCode.Forbidden, ERROR.headers.techAuth );

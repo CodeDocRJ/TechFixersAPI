@@ -32,6 +32,10 @@ module.exports = {
         product_category: {
             alreadAxists: "Product category already axists",
             added: "Product category added successfully",
+            update: "Product category updated successfully",
+            delete: "Product category deleted successfully",
+            list: "Product category list retrieved successfully",
+            get: "Product category retrieved successfully",
             notFound: "Product category not found"
         },
         technician: {
@@ -44,10 +48,11 @@ module.exports = {
         },
         product: {
             add: "Product added successfully",
-            notFound: "Product category not found",
-            update: "Product category updated successfully",
+            notFound: "Product not found",
+            update: "Product updated successfully",
             list: "Product list retrieved successfully",
-            get: "Product retrieved successfully"
+            get: "Product retrieved successfully",
+            delete: "Product deleted successfully",
         },
         role: {
             role: " Role changed successfully"

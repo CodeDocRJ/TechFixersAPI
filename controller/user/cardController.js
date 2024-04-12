@@ -99,7 +99,6 @@ module.exports.updateCard = async ( req, res ) =>
 
         if ( cardNumber )
         {
-            console.log( "cardNumber: ", cardNumber );
             validationCondition.cardNumber = cardNumber;
             const isCard = await CardModel.findOne( validationCondition );
             if ( isCard )

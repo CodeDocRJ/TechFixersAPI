@@ -84,7 +84,8 @@ module.exports.updateProduct = async ( req, res ) =>
     try
     {
         const productId = req.params.productId;
-        const { categoryId, name, type, brand, model, price, description, rating, productImage } = req.body;
+        const { categoryId, name, type, brand, model, price, description, rating } = req.body;
+        const productImage = req.file;
 
         const product = await ProductModel.findById( productId );
 
@@ -136,6 +137,30 @@ module.exports.updateProduct = async ( req, res ) =>
     } catch ( error )
     {
         console.error( "Error in update product : ", error );
+        return getResult( res, HttpStatusCode.InternalServerError, error.message, ERROR.internalServerError );
+    }
+};
+
+module.exports.deleteProduct = async ( req, res ) =>
+{
+    try
+    {
+        const { productId } = req.params;
+
+        const product = await ProductModel.findById( productId );
+
+        if ( !product )
+        {
+            return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.product.notFound );
+        }
+
+        // await repairCategory.deleteOne();
+        await product.deleteOne( { _id: productId } );
+
+        return getResult( res, HttpStatusCode.Ok, 1, ADMIN.product.delete );
+    } catch ( error )
+    {
+        console.error( "Error in delete product : ", error );
         return getResult( res, HttpStatusCode.InternalServerError, error.message, ERROR.internalServerError );
     }
 };
