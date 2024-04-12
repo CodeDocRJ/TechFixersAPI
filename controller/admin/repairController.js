@@ -21,11 +21,13 @@ module.exports.getAllRepairRequests = async ( req, res ) =>
             .limit( limit )
             .populate( {
                 path: "userId",
-                select: "userName email phone firstName lastName"
+                select: "userName email phone firstName lastName",
+                as: "userData"
             } )
             .populate( {
                 path: "repairCategoryId",
-                select: "applianceName"
+                select: "applianceName",
+                as: "repairCatData"
             } )
             .lean()
             .exec();
