@@ -41,7 +41,7 @@ module.exports.getRepairRequests = async ( req, res ) =>
             delete request.repairCategoryId;
         } );
 
-        return getResult( res, HttpStatusCode.Ok, modifiedRepairRequests, ADMIN.repair_category.list );
+        return getResult( res, HttpStatusCode.Ok, modifiedRepairRequests, USER.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair requests : ", error );
