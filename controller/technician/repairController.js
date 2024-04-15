@@ -10,14 +10,38 @@ module.exports.getRepairRequests = async ( req, res ) =>
     {
         const techId = req.tech.id;
 
-        const repairRequests = await RepairRequestModel.find( { techId: techId } ).lean();
+        // const repairRequests = await RepairRequestModel.find( { techId: techId } ).lean();
+
+        const repairRequests = await RepairRequestModel.find( { techId: techId } )
+        .populate( {
+            path: "userId",
+            select: "userName email phone firstName lastName"
+        } )
+        .populate( {
+            path: "repairCategoryId",
+            select: "applianceName"
+        } )
+        .lean()
+        .exec();
 
         if ( repairRequests.length === 0 )
         {
             return getErrorResult( res, HttpStatusCode.NotFound, ADMIN.repair_category.notFound );
         }
 
-        return getResult( res, HttpStatusCode.Ok, repairRequests, ADMIN.repair_category.list );
+        const modifiedRepairRequests = repairRequests.map( request => ( {
+            ...request,
+            userData: request.userId,
+            repairCategoryData: request.repairCategoryId,
+        } ) );
+
+        modifiedRepairRequests.forEach( request =>
+        {
+            delete request.userId;
+            delete request.repairCategoryId;
+        } );
+
+        return getResult( res, HttpStatusCode.Ok, modifiedRepairRequests, ADMIN.repair_category.list );
     } catch ( error )
     {
         console.error( "Error in get repair requests : ", error );
