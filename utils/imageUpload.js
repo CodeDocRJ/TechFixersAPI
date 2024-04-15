@@ -17,13 +17,12 @@ module.exports.uploadprofileImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        console.log( `uploadprofileImage...  ${ file.mimetype }` );
-        if ( file.mimetype === 'image/png')
+        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
         } else
         {
-            cb( new Error( 'Only PNG images are allowed' ) );
+            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
         }
         // cb( null, true );
     }
@@ -36,12 +35,12 @@ module.exports.uploadcategoryImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpg' )
+        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
         } else
         {
-            cb( new Error( 'Only PNG and JPG images are allowed' ) );
+            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
         }
         // cb( null, true );
     }
@@ -54,12 +53,12 @@ module.exports.uploadproductImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpg' )
+        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
         } else
         {
-            cb( new Error( 'Only PNG and JPG images are allowed' ) );
+            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
         }
         // cb( null, true );
     }
@@ -72,12 +71,12 @@ module.exports.uploadapplianceImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpg' )
+        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
         } else
         {
-            cb( new Error( 'Only PNG and JPG images are allowed' ) );
+            cb( new Error( 'Only PNG and JPEG images are allowed' ) );
         }
         // cb( null, true );
     }
