@@ -17,12 +17,13 @@ module.exports.uploadprofileImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
-        if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpg' )
+        console.log( `uploadprofileImage...  ${ file.mimetype }` );
+        if ( file.mimetype === 'image/png')
         {
             cb( null, true );
         } else
         {
-            cb( new Error( 'Only PNG and JPG images are allowed' ) );
+            cb( new Error( 'Only PNG images are allowed' ) );
         }
         // cb( null, true );
     }
