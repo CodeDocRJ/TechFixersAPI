@@ -17,6 +17,7 @@ module.exports.uploadprofileImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
+        console.log( `uploadprofileImage mime type is==> ${ file.mimetype } ` );
         if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
@@ -35,6 +36,7 @@ module.exports.uploadcategoryImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
+        console.log( `uploadcategoryImage mime type is==> ${ file.mimetype } ` );
         if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
@@ -53,6 +55,7 @@ module.exports.uploadproductImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
+        console.log( `uploadproductImage mime type is==> ${ file.mimetype } ` );
         if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
@@ -71,6 +74,7 @@ module.exports.uploadapplianceImage = multer( {
     },
     fileFilter: ( req, file, cb ) =>
     {
+        console.log( `uploadapplianceImage mime type is==> ${ file.mimetype } ` );
         if ( file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' )
         {
             cb( null, true );
